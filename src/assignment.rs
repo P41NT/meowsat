@@ -1,12 +1,12 @@
 use std::rc::Weak;
-use crate::clauses::clause_db::Clause;
+use crate::clauses::clause_type::{Clause, ClauseID};
 use crate::types::{LBool, Literal};
 
 pub struct Assignment {
     assignments: Vec<LBool>,
     trails: Vec<Literal>,
     trail_lim: Vec<usize>,
-    cause: Vec<Weak<Clause>> // required for CDCL I think
+    reason: Vec<Option<ClauseID>>
 }
 
 impl Assignment {
@@ -18,7 +18,7 @@ impl Assignment {
         todo!("Implement literal look up, returns if given literal is true or false or undef")
     }
 
-    pub fn enqueue(&mut self, lit: Literal) {
+    pub fn enqueue(&mut self, lit: Literal, cause: Option<ClauseID>) {
         todo!("Implement enqueue for assignments")
     }
 

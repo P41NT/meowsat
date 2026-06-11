@@ -30,7 +30,7 @@ impl Assignment {
 
     pub fn enqueue(&mut self, lit: Literal, cause: Option<ClauseID>) {
         let var = lit.variable();
-        self.assignment[var] = if lit.sign(){
+        self.assignments[var] = if lit.sign(){
             LBool::True
         } else{
             LBool::False
@@ -47,7 +47,7 @@ impl Assignment {
         while self.trails.len() > llim{
             let lit = self.trails.pop().unwrap();
             self.assignments[lit.variable()] = LBool::Undef;
-            self.reason[var] = None;
+            self.reason[lit.variable()] = None;
         }
         self.trail_lim.truncate(level);
     }

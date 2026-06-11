@@ -26,4 +26,10 @@ impl Literal {
     pub fn new(variable: u32, sign: bool) -> Literal {
         Literal((variable << 1) | (sign as u32))
     }
+    pub fn variable() -> usize{
+        (self.0 >> 1) as usize
+    }
+    pub fn sign() ->bool{
+        (self.0 & 1) == 1
+    }
 }

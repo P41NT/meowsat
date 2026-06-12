@@ -3,15 +3,17 @@ use crate::clauses::clause_type::{Clause, ClauseID};
 use crate::types::{LBool, Literal};
 
 pub struct Assignment {
+    pub num_vars: usize,
     assignments: Vec<LBool>,
-    trails: Vec<Literal>,
-    trail_lim: Vec<usize>,
-    reason: Vec<Option<ClauseID>>
+    pub trails: Vec<Literal>,
+    pub trail_lim: Vec<usize>,
+    pub reason: Vec<Option<ClauseID>>
 }
 
 impl Assignment {
     pub fn new(num_vars: usize) -> Self {
         Assignment {
+            num_vars,
             assignments: vec![LBool::Undef;num_vars],
             trails: Vec::new(),
             trail_lim: Vec::new(),

@@ -17,11 +17,16 @@ impl ClauseDB for SimpleClauseDB {
         self.clauses.push(clause);
         ClauseID(self.clauses.len() - 1)
     }
+    fn get_clause(&self, id: ClauseID) -> &Clause {
+        &self.clauses[id.0]
+    }
     fn is_satisfied(&self, assignment: &Assignment) -> bool {
         self.clauses.iter().all(|clause| clause.is_satisfied(assignment))
     }
-
     fn is_unsatisfied(&self, assignment: &Assignment) -> bool {
         self.clauses.iter().any(|clause| clause.is_unsatisfied(assignment))
+    }
+    fn num_clauses(&self) -> usize {
+        self.clauses.len()
     }
 }

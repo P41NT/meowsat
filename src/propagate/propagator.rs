@@ -12,6 +12,6 @@ pub struct Watcher {
 
 pub trait Propagator<Clauses: ClauseDB> {
     fn new(clause_db: &Clauses, assignment: &mut Assignment) -> Self;
-    fn propagate(&mut self, assignment: &mut Assignment, clause_db: Clauses) -> Option<ClauseID>;
+    fn propagate(&mut self, assignment: &mut Assignment, clause_db: &Clauses) -> Option<ClauseID>;
     // propagate returns clause_id in case of conflict
 }

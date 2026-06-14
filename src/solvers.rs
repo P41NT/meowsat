@@ -1,2 +1,2 @@
-mod solver;
-mod dpll_solver;
+pub(crate) mod solver;
+pub mod dpll_solver;

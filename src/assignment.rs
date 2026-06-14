@@ -1,5 +1,4 @@
-use std::rc::Weak;
-use crate::clauses::clause_type::{Clause, ClauseID};
+use crate::clauses::clause_type::ClauseID;
 use crate::types::{LBool, Literal};
 
 pub struct Assignment {
@@ -12,6 +11,7 @@ pub struct Assignment {
 
 impl Assignment {
     pub fn new(num_vars: usize) -> Self {
+        let num_vars = num_vars + 1;
         Assignment {
             num_vars,
             assignments: vec![LBool::Undef;num_vars],

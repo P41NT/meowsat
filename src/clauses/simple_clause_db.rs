@@ -2,17 +2,14 @@ use crate::assignment::Assignment;
 use crate::clauses::clause_db::ClauseDB;
 use crate::clauses::clause_type::{Clause, ClauseID};
 
-struct SimpleClauseDB {
+pub struct SimpleClauseDB {
     clauses: Vec<Clause>,
 }
 
-impl SimpleClauseDB {
-    pub fn new() -> SimpleClauseDB {
+impl ClauseDB for SimpleClauseDB {
+    fn new() -> SimpleClauseDB {
         SimpleClauseDB { clauses: Vec::new() }
     }
-}
-
-impl ClauseDB for SimpleClauseDB {
     fn add_clause(&mut self, clause: Clause) -> ClauseID {
         self.clauses.push(clause);
         ClauseID(self.clauses.len() - 1)

@@ -27,7 +27,7 @@ impl Not for LBool {
 }
 
 #[derive(Debug, Clone, Copy, Eq, PartialEq)]
-pub struct Literal (u32);
+pub struct Literal (pub u32);
 
 impl Literal {
     pub fn new(variable: u32, sign: bool) -> Literal {

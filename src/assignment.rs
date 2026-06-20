@@ -6,7 +6,8 @@ pub struct Assignment {
     assignments: Vec<LBool>,
     pub trails: Vec<Literal>,
     pub trail_lim: Vec<usize>,
-    pub reason: Vec<Option<ClauseID>>
+    pub reason: Vec<Option<ClauseID>>,
+    pub level: Vec<i32>
 }
 
 impl Assignment {
@@ -17,7 +18,8 @@ impl Assignment {
             assignments: vec![LBool::Undef;num_vars],
             trails: Vec::new(),
             trail_lim: Vec::new(),
-            reason: vec![None;num_vars]
+            reason: vec![None;num_vars],
+            level: vec![-1; num_vars]
         }
     }
 
@@ -39,6 +41,7 @@ impl Assignment {
         };
         self.reason[var] = cause;
         self.trails.push(lit);
+        self.level[var] = self.trail_lim.len() as i32;
     }
 
     pub fn pop_to_level(&mut self, level: usize) {
@@ -46,7 +49,7 @@ impl Assignment {
             return;
         }
         let llim = self.trail_lim[level];
-        while self.trails.len() > llim{
+        while self.trails.len() > llim {
             let lit = self.trails.pop().unwrap();
             self.assignments[lit.variable()] = LBool::Undef;
             self.reason[lit.variable()] = None;

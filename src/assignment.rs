@@ -6,7 +6,8 @@ pub struct Assignment {
     assignments: Vec<LBool>,
     pub trails: Vec<Literal>,
     pub trail_lim: Vec<usize>,
-    pub reason: Vec<Option<ClauseID>>
+    pub reason: Vec<Option<ClauseID>>,
+    pub level: Vec<i32>,
 }
 
 impl Assignment {
@@ -14,39 +15,41 @@ impl Assignment {
         let num_vars = num_vars + 1;
         Assignment {
             num_vars,
-            assignments: vec![LBool::Undef;num_vars],
+            assignments: vec![LBool::Undef; num_vars],
             trails: Vec::new(),
             trail_lim: Vec::new(),
-            reason: vec![None;num_vars]
+            reason: vec![None; num_vars],
+            level: vec![-1; num_vars],
         }
     }
 
     pub fn literal(&self, lit: Literal) -> LBool {
         let val = self.assignments[lit.variable()];
-        if val == LBool::Undef || lit.sign(){
+        if val == LBool::Undef || lit.sign() {
             val
-        }else{
+        } else {
             -val
         }
     }
 
     pub fn enqueue(&mut self, lit: Literal, cause: Option<ClauseID>) {
         let var = lit.variable();
-        self.assignments[var] = if lit.sign(){
+        self.assignments[var] = if lit.sign() {
             LBool::True
-        } else{
+        } else {
             LBool::False
         };
         self.reason[var] = cause;
         self.trails.push(lit);
+        self.level[var] = self.trail_lim.len() as i32;
     }
 
     pub fn pop_to_level(&mut self, level: usize) {
-        if level >= self.trail_lim.len(){
+        if level >= self.trail_lim.len() {
             return;
         }
         let llim = self.trail_lim[level];
-        while self.trails.len() > llim{
+        while self.trails.len() > llim {
             let lit = self.trails.pop().unwrap();
             self.assignments[lit.variable()] = LBool::Undef;
             self.reason[lit.variable()] = None;
@@ -54,7 +57,7 @@ impl Assignment {
         self.trail_lim.truncate(level);
     }
 
-    pub fn new_level(&mut self){
+    pub fn new_level(&mut self) {
         self.trail_lim.push(self.trails.len());
     }
 }

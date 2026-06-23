@@ -6,7 +6,7 @@ use crate::propagate::propagator::Propagator;
 
 use std::time::Instant;
 
-pub fn test_solver<Clauses, Prop, Solve, P>(test_file: P)
+pub fn test_solver<Clauses, Prop, Solve, P>(test_file: P, print_res: bool)
 where
     Clauses: ClauseDB,
     Prop: Propagator<Clauses>,
@@ -33,5 +33,7 @@ where
         None => "UNSAT",
     };
 
-    println!("{}\t\t{:?}\t\t{}", filename, duration, verdict);
+    if print_res {
+        println!("{}\t\t{:?}\t\t{}", filename, duration, verdict);
+    }
 }

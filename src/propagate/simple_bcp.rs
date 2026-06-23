@@ -147,4 +147,21 @@ impl<Clauses: ClauseDB> Propagator<Clauses> for SimpleBCP {
     fn reset_head(&mut self, level: usize) {
         self.assign_head = level;
     }
+
+    fn add_clause(&mut self, clause_id: ClauseID, clause_db: &Clauses) {
+        let clause = clause_db.get_clause(clause_id);
+
+        if (clause.len() <= 1) {
+            return;
+        }
+        if clause_id.0 >= self.clause_watches.len() {
+            self.clause_watches.resize(clause_id.0 + 1, (Literal(0), Literal(0)));
+        }
+        let lit1 = clause.literals[0];
+        let lit2 = clause.literals[1];
+
+        self.clause_watches[clause_id.0] = (lit1, lit2);
+        self.watches[Self::lit_idx(lit1)].push(Watcher { clause_id, other_lit: lit2 });
+        self.watches[Self::lit_idx(lit2)].push(Watcher { clause_id, other_lit: lit1 });
+    }
 }

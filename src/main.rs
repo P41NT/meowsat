@@ -7,7 +7,8 @@ mod parser;
 mod tester;
 
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
+use std::time::Instant;
 use crate::tester::test_solver;
 use crate::clauses::simple_clause_db::SimpleClauseDB;
 use crate::propagate::simple_bcp::SimpleBCP;
@@ -15,13 +16,30 @@ use crate::solvers::cdcl_solver::CDCLSolver;
 use crate::solvers::dpll_solver::DPLLSolver;
 
 fn main() {
-    let test_dir = fs::read_dir("C:\\Users\\shawn\\RustroverProjects\\meowsat\\testcases\\uf50-218");
+    let root_dir = Path::new("testcases");
 
-    for test_file in test_dir.unwrap() {
-        let test_file = test_file.unwrap();
-        let test_path = test_file.path();
-        test_solver::<SimpleClauseDB, SimpleBCP, CDCLSolver<SimpleClauseDB, SimpleBCP>, PathBuf>(test_path);
-        // test_solver::<SimpleClauseDB, SimpleBCP, DPLLSolver<SimpleClauseDB, SimpleBCP>, PathBuf>(test_path);
+    let total_time = Instant::now();
+
+    if let Ok(folders) = fs::read_dir(root_dir) {
+        for folder in folders.flatten() {
+            if folder.path().is_dir() {
+                let folder_name = folder.file_name().into_string().unwrap();
+                let folder_time = Instant::now();
+                let mut files_processed = 0;
+
+                if let Ok(files) = fs::read_dir(folder.path()) {
+                    for test_file in files.flatten() {
+                        test_solver::<SimpleClauseDB, SimpleBCP, CDCLSolver<SimpleClauseDB, SimpleBCP>, PathBuf>(test_file.path(), false);
+                        files_processed += 1;
+                    }
+                }
+
+                let folder_duration = folder_time.elapsed();
+                println!("{}: Processed {} Files, Elapsed Time: {:?}", folder_name, files_processed, folder_duration);
+            }
+        }
     }
 
+    let duration = total_time.elapsed();
+    println!("Total Time Taken: {:?}", duration);
 }

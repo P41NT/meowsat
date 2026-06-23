@@ -14,4 +14,5 @@ pub trait Propagator<Clauses: ClauseDB> {
     fn propagate(&mut self, assignment: &mut Assignment, clause_db: &Clauses) -> Option<ClauseID>;
     // propagate returns clause_id in case of conflict
     fn reset_head(&mut self, level: usize);
+    fn add_clause(&mut self, clause: ClauseID, clause_db: &Clauses);
 }

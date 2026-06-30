@@ -1,7 +1,7 @@
 use crate::assignment::Assignment;
 use crate::clauses::clause_db::ClauseDB;
 use crate::propagate::propagator::Propagator;
-use crate::solvers::solver::Solver;
+use crate::solvers::solver::SolverOld;
 use crate::types::{LBool, Literal};
 
 pub struct DPLLSolver<Clauses: ClauseDB, Prop: Propagator<Clauses>> {
@@ -10,7 +10,7 @@ pub struct DPLLSolver<Clauses: ClauseDB, Prop: Propagator<Clauses>> {
     prop: Prop,
 }
 
-impl<Clauses: ClauseDB, Prop: Propagator<Clauses>> Solver<Clauses, Prop> for DPLLSolver<Clauses, Prop> {
+impl<Clauses: ClauseDB, Prop: Propagator<Clauses>> SolverOld<Clauses, Prop> for DPLLSolver<Clauses, Prop> {
     fn new(clause_db: Clauses, prop: Prop, assignment: Assignment) -> Self {
         Self {
             assignment,
@@ -41,7 +41,7 @@ impl<Clauses: ClauseDB, Prop: Propagator<Clauses>> Solver<Clauses, Prop> for DPL
                     // conflict, and we change it.
                     let (last_lit, flipped) = dec_stack.pop().unwrap();
                     self.assignment.pop_to_level(dec_stack.len());
-                    self.prop.reset_head(self.assignment.trails.len());
+                    self.prop.reset_head(&self.assignment);
                     // if we haven't tried both true and false cases, we try that first
                     if !flipped {                
                         self.assignment.new_level();

@@ -32,6 +32,18 @@ impl Assignment {
         }
     }
 
+    pub fn current_level(&self) -> usize {
+        self.trail_lim.len()
+    }
+
+    pub fn reason_of(&self, var: usize) -> Option<ClauseID> {
+        self.reason[var]
+    }
+
+    pub fn level_of(&self, var: usize) -> i32 {
+        self.level[var]
+    }
+
     pub fn enqueue(&mut self, lit: Literal, cause: Option<ClauseID>) {
         let var = lit.variable();
         self.assignments[var] = if lit.sign() {
@@ -44,17 +56,22 @@ impl Assignment {
         self.level[var] = self.trail_lim.len() as i32;
     }
 
-    pub fn pop_to_level(&mut self, level: usize) {
+    pub fn pop_to_level(&mut self, level: usize) -> Vec<Literal> {
         if level >= self.trail_lim.len() {
-            return;
+            return Vec::new();
         }
         let llim = self.trail_lim[level];
+        let mut unassigned = Vec::with_capacity(self.trails.len() - llim);
+
         while self.trails.len() > llim {
             let lit = self.trails.pop().unwrap();
             self.assignments[lit.variable()] = LBool::Undef;
             self.reason[lit.variable()] = None;
+            self.level[lit.variable()] = -1;
+            unassigned.push(lit);
         }
         self.trail_lim.truncate(level);
+        unassigned
     }
 
     pub fn new_level(&mut self) {

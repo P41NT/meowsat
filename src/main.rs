@@ -5,15 +5,12 @@ mod propagate;
 mod solvers;
 mod parser;
 mod tester;
+mod heuristics;
 
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::time::Instant;
-use crate::tester::test_solver;
-use crate::clauses::simple_clause_db::SimpleClauseDB;
-use crate::propagate::simple_bcp::SimpleBCP;
-use crate::solvers::cdcl_solver::CDCLSolver;
-use crate::solvers::dpll_solver::DPLLSolver;
+use crate::tester::test_basic_solver;
 
 fn main() {
     let root_dir = Path::new("testcases");
@@ -29,7 +26,8 @@ fn main() {
 
                 if let Ok(files) = fs::read_dir(folder.path()) {
                     for test_file in files.flatten() {
-                        test_solver::<SimpleClauseDB, SimpleBCP, CDCLSolver<SimpleClauseDB, SimpleBCP>, PathBuf>(test_file.path(), false);
+                        test_basic_solver(test_file.path(), true);
+                        // test_solver_old::<SimpleClauseDB, SimpleBCP, CDCLSolver<SimpleClauseDB, SimpleBCP>, PathBuf>(test_file.path(), false);
                         files_processed += 1;
                     }
                 }

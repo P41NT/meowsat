@@ -144,8 +144,8 @@ impl<Clauses: ClauseDB> Propagator<Clauses> for SimpleBCP {
         None
     }
 
-    fn reset_head(&mut self, level: usize) {
-        self.assign_head = level;
+    fn reset_head(&mut self, assignment: &Assignment) {
+        self.assign_head = assignment.trails.len();
     }
 
     fn add_clause(&mut self, clause_id: ClauseID, clause_db: &Clauses) {
